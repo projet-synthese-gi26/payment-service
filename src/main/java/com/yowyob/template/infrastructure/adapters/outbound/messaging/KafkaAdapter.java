@@ -1,6 +1,7 @@
 package com.yowyob.template.infrastructure.adapters.outbound.messaging;
 
 import com.yowyob.template.domain.model.Wallet;
+import com.yowyob.template.domain.ports.out.WalletEventPublisherPort;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ public class KafkaAdapter implements WalletEventPublisherPort {
 
     private final ReactiveKafkaProducerTemplate<String, Object> kafkaTemplate;
 
-    @Value("${application.kafka.topics.wallet-events}")
+//    @Value("${application.kafka.topics.wallet-events}")
     private String walletEventsTopic;
 
     @Override
