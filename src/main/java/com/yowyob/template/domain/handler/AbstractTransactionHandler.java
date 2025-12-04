@@ -1,6 +1,8 @@
 package com.yowyob.template.domain.handler;
 
 import com.yowyob.template.domain.model.Transaction;
+import com.yowyob.template.domain.model.TransactionStatus;
+import com.yowyob.template.domain.model.TransactionType;
 import com.yowyob.template.domain.model.Wallet;
 import com.yowyob.template.domain.ports.out.TransactionRepositoryPort;
 import com.yowyob.template.domain.ports.out.WalletRepositoryPort;
@@ -15,8 +17,11 @@ public abstract class AbstractTransactionHandler {
     protected final WalletRepositoryPort walletRepository;
     protected final TransactionRepositoryPort transactionRepository;
 
+    public abstract TransactionType getTransactionType();
+
     // LE TEMPLATE METHOD (Orchestration Reactive)
-    public Mono<Transaction> process(UUID walletId, BigDecimal amount, String type) {
+    public Mono<Transaction> process(UUID walletId, BigDecimal amount) {
+        TransactionType type = getTransactionType();
         return walletRepository.findById(walletId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Wallet not found")))
                 .flatMap(wallet -> validate(wallet, amount)) // Etape 1 : Validation
@@ -32,8 +37,8 @@ public abstract class AbstractTransactionHandler {
     protected abstract Mono<Wallet> applyBalance(Wallet wallet, BigDecimal amount);
 
     // Méthode commune
-    private Mono<Transaction> createTransaction(Wallet wallet, BigDecimal amount, String type) {
-        return Mono.just(new Transaction(null, wallet.id(), amount, type, "COMPLETED"));
+    private Mono<Transaction> createTransaction(Wallet wallet, BigDecimal amount, TransactionType type) {
+        return Mono.just(new Transaction(null, wallet.id(), amount, type, TransactionStatus.COMPLETED));
     }
 
     // Méthode commune (peut être override ou déléguer à un port)

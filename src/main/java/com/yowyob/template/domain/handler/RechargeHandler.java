@@ -1,5 +1,6 @@
 package com.yowyob.template.domain.handler;
 
+import com.yowyob.template.domain.model.TransactionType;
 import com.yowyob.template.domain.model.Wallet;
 import com.yowyob.template.domain.ports.out.TransactionRepositoryPort;
 import com.yowyob.template.domain.ports.out.WalletRepositoryPort;
@@ -23,5 +24,10 @@ public class RechargeHandler extends AbstractTransactionHandler{
     @Override
     protected Mono<Wallet> applyBalance(Wallet wallet, BigDecimal amount) {
         return null;
+    }
+
+    @Override
+    public TransactionType getTransactionType() {
+        return TransactionType.RECHARGE;
     }
 }

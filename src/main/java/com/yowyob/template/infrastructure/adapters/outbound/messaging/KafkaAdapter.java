@@ -10,13 +10,16 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-@RequiredArgsConstructor
 public class KafkaAdapter implements WalletEventPublisherPort {
 
     private final ReactiveKafkaProducerTemplate<String, Object> kafkaTemplate;
 
-//    @Value("${application.kafka.topics.wallet-events}")
+    @Value("${application.kafka.topics.wallet-create}")
     private String walletEventsTopic;
+
+    public KafkaAdapter(ReactiveKafkaProducerTemplate<String, Object> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     @Override
     public Mono<Void> publishWalletCreated(Wallet wallet) {

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
 
 spring:
   application:
@@ -52,7 +52,11 @@ application:
 
   kafka:
     topics:
-      product-events: test-topic
+      wallet-create: wallet-create-topic
+      payment-commission: transaction-commission-topic
+
+  payment:
+    commission-rate: 0.05
 
 # RESILIENCE4J 
 resilience4j:

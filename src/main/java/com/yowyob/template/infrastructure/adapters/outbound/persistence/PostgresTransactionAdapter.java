@@ -1,12 +1,17 @@
 package com.yowyob.template.infrastructure.adapters.outbound.persistence;
 
 import com.yowyob.template.domain.model.Transaction;
+import com.yowyob.template.domain.model.TransactionStatus;
+import com.yowyob.template.domain.model.TransactionType;
 import com.yowyob.template.domain.ports.out.TransactionRepositoryPort;
 import com.yowyob.template.infrastructure.adapters.outbound.persistence.entity.TransactionEntity;
 import com.yowyob.template.infrastructure.adapters.outbound.persistence.repository.TransactionR2dbcRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -21,18 +26,36 @@ public class PostgresTransactionAdapter implements TransactionRepositoryPort {
                 transaction.id(),
                 transaction.walletId(),
                 transaction.amount(),
-                transaction.type(),
-                transaction.status()
+                transaction.type().name(),
+                transaction.status().name()
         );
 
         // 2. Save & Map Entity -> Domain
         return repository.save(entity)
-                .map(saved -> new Transaction(
-                        saved.getId(),
-                        saved.getWalletId(),
-                        saved.getAmount(),
-                        saved.getType(),
-                        saved.getStatus()
-                ));
+                .map(this::mapToDomain);
+    }
+
+    @Override
+    public Mono<Transaction> getTransactionById(UUID id) {
+        return repository.findById(id)
+                .map(this::mapToDomain);
+    }
+
+    @Override
+    public Flux<Transaction> getTransactionsByWalletId(UUID walletId) {
+        return repository.findAllByWalletId(walletId) // Retourne Flux<TransactionEntity>
+                .map(this::mapToDomain);              // Convertit en Flux<Transaction>
+    }
+
+    // Méthode utilitaire pour faire la conversion proprement
+    private Transaction mapToDomain(TransactionEntity entity) {
+        return new Transaction(
+                entity.getId(),
+                entity.getWalletId(),
+                entity.getAmount(),
+                // Attention à la conversion String -> Enum ici
+                TransactionType.valueOf(entity.getType()),
+                TransactionStatus.valueOf(entity.getStatus())
+        );
     }
 }
