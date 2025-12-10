@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 
 @Component
-public class RechargeHandler extends AbstractTransactionHandler{
+public class RechargeHandler extends AbstractTransactionHandler {
 
     public RechargeHandler(WalletRepositoryPort walletRepository, TransactionRepositoryPort transactionRepository) {
         super(walletRepository, transactionRepository);
@@ -18,12 +18,19 @@ public class RechargeHandler extends AbstractTransactionHandler{
 
     @Override
     protected Mono<Wallet> validate(Wallet wallet, BigDecimal amount) {
-        return null;
+        // Validation simple : le montant doit être positif
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return Mono.error(new IllegalArgumentException("Le montant de la recharge doit être positif"));
+        }
+        // On pourrait ajouter ici des règles : plafond max du wallet, statut du wallet actif, etc.
+        return Mono.just(wallet);
     }
 
     @Override
     protected Mono<Wallet> applyBalance(Wallet wallet, BigDecimal amount) {
-        return null;
+        // LOGIQUE MÉTIER : On AJOUTE le montant au solde
+        BigDecimal newBalance = wallet.balance().add(amount);
+        return Mono.just(wallet.withBalance(newBalance));
     }
 
     @Override

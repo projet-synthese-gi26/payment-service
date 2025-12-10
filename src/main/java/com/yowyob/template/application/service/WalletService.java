@@ -29,8 +29,8 @@ public class WalletService implements WalletUseCase {
                 wallet.balance() != null ? wallet.balance() : BigDecimal.ZERO
         );
 
-        return walletRepositoryPort.save(toSave)
-                .flatMap(saved -> eventPublisher.publishWalletCreated(saved).thenReturn(saved));
+        return walletRepositoryPort.save(toSave);
+                //.flatMap(saved -> eventPublisher.publishWalletCreated(saved).thenReturn(saved));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class WalletService implements WalletUseCase {
                             existingWallet.balance()
                     );
 
-                    return walletRepositoryPort.save(walletToUpdate);
+                    return walletRepositoryPort.updateWallet(walletToUpdate);
                 });
     }
 

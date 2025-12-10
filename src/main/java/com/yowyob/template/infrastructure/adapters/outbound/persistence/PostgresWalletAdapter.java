@@ -62,6 +62,7 @@ public class PostgresWalletAdapter implements WalletRepositoryPort {
                 .map(entity -> {
                     entity.setOwnerId(wallet.ownerId());
                     entity.setBalance(wallet.balance());
+                    entity.setNew(false);
                     return entity;
                 })
 

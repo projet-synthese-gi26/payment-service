@@ -26,7 +26,7 @@ public abstract class AbstractTransactionHandler {
                 .switchIfEmpty(Mono.error(new RuntimeException("Wallet not found")))
                 .flatMap(wallet -> validate(wallet, amount)) // Etape 1 : Validation
                 .flatMap(wallet -> applyBalance(wallet, amount)) // Etape 2 : Calcul nouveau solde
-                .flatMap(walletRepository::save) // Etape 3 : Sauvegarde Wallet
+                .flatMap(walletRepository::updateWallet)
                 .flatMap(savedWallet -> createTransaction(savedWallet, amount, type)) // Etape 4 : Créer objet Transaction
                 .flatMap(transactionRepository::save) // Etape 5 : Sauvegarder historique
                 .doOnSuccess(this::publishEvent); // Etape 6 : Side effect (Event)
