@@ -59,6 +59,20 @@ application:
 
   payment:
     commission-rate: 0.05
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 # RESILIENCE4J 
 resilience4j:
