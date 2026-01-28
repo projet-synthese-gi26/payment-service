@@ -33,7 +33,7 @@ spring:
   # REDIS CLUSTER 
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST:168.119.122.86}
       port: ${REDIS_PORT:7000}
       password: ${REDIS_PASSWORD:password}
       cluster:
@@ -41,7 +41,7 @@ spring:
 
   # KAFKA 
   kafka:
-    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
+    bootstrap-servers: ${KAFKA_HOST:168.119.122.86}:${KAFKA_PORT:9092}
     consumer:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -55,7 +55,7 @@ spring:
 # CUSTOM CONFIG 
 application:
   external:
-    stock-service-url: http://${EXTERNAL_HOST:localhost}:8081
+    stock-service-url: http://${EXTERNAL_HOST:168.119.122.86}:8081
   security:
     jwt:
       secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
