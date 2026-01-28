@@ -1,10 +1,10 @@
-package com.yowyob.reactive_hexagonal;
+package com.yowyob.template;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ReactiveHexagonalApplicationTests {
+class PaymentServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -33,11 +33,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/actuator/**").permitAll()
-                        .anyExchange().authenticated()
-                )
+                        .pathMatchers("/swagger-ui.html").permitAll()
+                        .pathMatchers("/swagger-ui/**").permitAll()
+                        .pathMatchers("/v3/api-docs/**").permitAll()
+                        .pathMatchers("/webjars/swagger-ui/**").permitAll()
+                        .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtDecoder(jwtDecoder()))
-                )
+                        .jwt(jwt -> jwt.jwtDecoder(jwtDecoder())))
                 .build();
     }
 
@@ -48,8 +50,7 @@ public class SecurityConfig {
         // Your allowed origins
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3999",
-                "http://168.119.122.86:3999"
-        ));
+                "http://168.119.122.86:3999"));
 
         // Your allowed methods
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -64,7 +65,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
