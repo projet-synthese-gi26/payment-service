@@ -5,8 +5,12 @@ import com.yowyob.template.domain.ports.in.WalletUseCase;
 import com.yowyob.template.infrastructure.adapters.inbound.rest.dto.WalletRequest;
 import com.yowyob.template.infrastructure.adapters.inbound.rest.dto.WalletResponse;
 import com.yowyob.template.infrastructure.mappers.WalletMapper;
-
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+@Tag(name = "Wallet Management", description = "API for wallet management")
 @RestController
 @RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor
@@ -26,6 +31,8 @@ public class WalletController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new wallet", description = "Creates a new wallet for a user.")
+    @ApiResponse(responseCode = "201", description = "Wallet created successfully", content = @Content(schema = @Schema(implementation = WalletResponse.class)))
     public Mono<WalletResponse> create(@RequestBody @Valid Mono<WalletRequest> requestMono) {
         return requestMono
                 .map(mapper::toDomain)
@@ -34,32 +41,47 @@ public class WalletController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all wallets", description = "Retrieves a list of all wallets.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved all wallets", content = @Content(schema = @Schema(implementation = WalletResponse.class)))
     public Flux<WalletResponse> getAllWallets() {
         return useCase.getAllWallets()
                 .map(mapper::toResponse);
     }
 
     @GetMapping("/{id}")
-    public Mono<WalletResponse> getWallet(@PathVariable UUID id) {
+    @Operation(summary = "Get wallet by ID", description = "Retrieves wallet details by its unique ID.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved wallet", content = @Content(schema = @Schema(implementation = WalletResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Wallet not found")
+    public Mono<WalletResponse> getWallet(@Parameter(description = "ID of the wallet to retrieve") @PathVariable UUID id) {
         return useCase.getWalletById(id)
                 .map(mapper::toResponse);
     }
 
     @GetMapping("/owner/{id}")
-    public Mono<WalletResponse> getWalletOwner(@PathVariable UUID id) {
+    @Operation(summary = "Get wallet by owner ID", description = "Retrieves wallet details by the owner's unique ID.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved wallet", content = @Content(schema = @Schema(implementation = WalletResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Wallet not found for the given owner")
+    public Mono<WalletResponse> getWalletOwner(@Parameter(description = "ID of the wallet owner") @PathVariable UUID id) {
         return useCase.getWalletByOwnerId(id)
                 .map(mapper::toResponse);
     }
 
     @PatchMapping("/{id}")
-    public Mono<WalletResponse> updateWallet(@PathVariable UUID id, @RequestBody @Valid WalletRequest request) {
+    @Operation(summary = "Update a wallet", description = "Updates the details of an existing wallet.")
+    @ApiResponse(responseCode = "200", description = "Wallet updated successfully", content = @Content(schema = @Schema(implementation = WalletResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Wallet not found")
+    public Mono<WalletResponse> updateWallet(@Parameter(description = "ID of the wallet to update") @PathVariable UUID id, @RequestBody @Valid WalletRequest request) {
         Wallet wallet = new Wallet(id, request.ownerId(), request.ownerName(), null);
         return useCase.updateWallet(wallet)
                 .map(mapper::toResponse);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Void> deleteWallet(@PathVariable UUID id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a wallet", description = "Deletes a wallet by its unique ID.")
+    @ApiResponse(responseCode = "204", description = "Wallet deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Wallet not found")
+    public Mono<Void> deleteWallet(@Parameter(description = "ID of the wallet to delete") @PathVariable UUID id) {
         return useCase.deleteWallet(id);
     }
 }
