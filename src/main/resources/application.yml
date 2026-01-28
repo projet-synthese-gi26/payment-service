@@ -11,9 +11,12 @@ spring:
 
   # POSTGRESQL (R2DBC)
   r2dbc:
-    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:payment_db}
+    url: r2dbc:postgresql://${DB_HOST:168.119.122.86}:${DB_PORT:5432}/${DB_NAME:payment_db}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:password}
+#    url: r2dbc:postgresql://localhost:5432/reactivedb
+#    username: master
+#    password: Azerty1234
     pool:
       enabled: true
       initial-size: 1
@@ -25,7 +28,7 @@ spring:
       validation-query: SELECT 1
   sql:
     init:
-      mode: always
+      mode: never
 
   # REDIS CLUSTER 
   data:
