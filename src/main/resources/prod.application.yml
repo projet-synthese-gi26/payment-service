@@ -28,17 +28,17 @@ spring:
       mode: always
 
   # REDIS CLUSTER 
-  data:
-    redis:
-      password: ${REDIS_PASSWORD:password}
-      cluster:
-        nodes:
-          - ${REDIS_HOST:localhost}:7001
-          - ${REDIS_HOST:localhost}:7002
-          - ${REDIS_HOST:localhost}:7003
-          - ${REDIS_HOST:localhost}:7004
-          - ${REDIS_HOST:localhost}:7005
-          - ${REDIS_HOST:localhost}:7006
+  #data:
+  #  redis:
+  #    password: ${REDIS_PASSWORD:password}
+  #    cluster:
+  #      nodes:
+  #        - ${REDIS_HOST:localhost}:7001
+  #        - ${REDIS_HOST:localhost}:7002
+  #        - ${REDIS_HOST:localhost}:7003
+  #        - ${REDIS_HOST:localhost}:7004
+  #        - ${REDIS_HOST:localhost}:7005
+  #        - ${REDIS_HOST:localhost}:7006
 
   # KAFKA 
   kafka:
