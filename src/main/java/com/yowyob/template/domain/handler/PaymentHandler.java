@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @Component
 public class PaymentHandler extends AbstractTransactionHandler {
 
+    private BigDecimal amountToRemove = new BigDecimal(0);
+
     public PaymentHandler(WalletRepositoryPort walletRepo, TransactionRepositoryPort txRepo) {
         super(walletRepo, txRepo);
     }
@@ -23,7 +25,8 @@ public class PaymentHandler extends AbstractTransactionHandler {
         }
 
         // Sécurité : Solde insuffisant
-        if (wallet.balance().compareTo(amount) < 0) {
+        amountToRemove = ( amount.multiply(BigDecimal.valueOf(10)) ).divide(BigDecimal.valueOf(100));
+        if (wallet.balance().compareTo(amountToRemove) < 0) {
             return Mono.error(new RuntimeException("Solde insuffisant pour le paiement"));
         }
         return Mono.just(wallet);
@@ -31,7 +34,7 @@ public class PaymentHandler extends AbstractTransactionHandler {
 
     @Override
     protected Mono<Wallet> applyBalance(Wallet wallet, BigDecimal amount) {
-        return Mono.just(wallet.withBalance(wallet.balance().subtract(amount)));
+        return Mono.just(wallet.withBalance(wallet.balance().subtract(amountToRemove)));
     }
 
     @Override

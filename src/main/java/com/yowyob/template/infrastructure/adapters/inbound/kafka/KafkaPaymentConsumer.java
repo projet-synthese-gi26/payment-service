@@ -23,7 +23,7 @@ public class KafkaPaymentConsumer {
     private final WalletUseCase walletUseCase;
 
 
-    @Value("${application.payment.commission-rate}")
+    @Value("${application.payment.commission-rate")
     private BigDecimal commissionRate;
 
     @KafkaListener(topics = "${application.kafka.topics.payment-commission}", groupId = "payment-group")

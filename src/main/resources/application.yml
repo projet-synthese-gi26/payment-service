@@ -1,5 +1,7 @@
 server:
   port: 8090
+  forward-headers-strategy: framework
+
 
 spring:
   application:
@@ -12,8 +14,8 @@ spring:
   # POSTGRESQL (R2DBC)
   r2dbc:
     url: r2dbc:postgresql://${DB_HOST:168.119.122.86}:${DB_PORT:5432}/${DB_NAME:payment_db}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:password}
+    username: ${DB_USERNAME:master}
+    password: ${DB_PASSWORD:Azerty1234*}
 #    url: r2dbc:postgresql://localhost:5432/reactivedb
 #    username: master
 #    password: Azerty1234
@@ -66,7 +68,7 @@ application:
 
 
   payment:
-    commission-rate: 0.05
+    commission-rate: 0.1
 
 management:
   endpoints:

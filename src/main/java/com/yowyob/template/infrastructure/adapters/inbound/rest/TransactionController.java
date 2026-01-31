@@ -32,7 +32,7 @@ public class TransactionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Create a new recharge transaction", description = "Creates a new transaction of type RECHARGE. This endpoint is reserved for agents.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create a new recharge transaction", description = "Creates a new transaction of type RECHARGE. This endpoint is reserved for agents.")
     @ApiResponse(responseCode = "201", description = "Transaction created successfully", content = @Content(schema = @Schema(implementation = TransactionResponse.class)))
     @ApiResponse(responseCode = "400", description = "Invalid request, only RECHARGE transactions are allowed")
     @ApiResponse(responseCode = "401", description = "Unauthorized, invalid or expired token")
@@ -42,6 +42,26 @@ public class TransactionController {
                 .flatMap(request -> {
                     if (request.type() != TransactionType.RECHARGE) {
                         return Mono.error(new IllegalArgumentException("Cet endpoint est réservé aux recharges via Agent"));
+                    }
+                    return Mono.just(request);
+                })
+                .map(mapper::toDomain)
+                .flatMap(useCase::createTransaction)
+                .map(mapper::toResponse);
+    }
+
+    @PostMapping("/payment")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new payment transaction", description = "Creates a new transaction of type PAYMENT.")
+    @ApiResponse(responseCode = "201", description = "Transaction created successfully", content = @Content(schema = @Schema(implementation = TransactionResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid request")
+    @ApiResponse(responseCode = "401", description = "Unauthorized, invalid or expired token")
+    @ApiResponse(responseCode = "403", description = "Forbidden")
+    public Mono<TransactionResponse> createPaymentTransaction(@RequestBody @Valid Mono<TransactionRequest> requestMono) {
+        return requestMono
+                .flatMap(request -> {
+                    if (request.type() != TransactionType.PAYMENT) {
+                        return Mono.error(new IllegalArgumentException("Cet endpoint est réservé aux recharges de type PAYMENT"));
                     }
                     return Mono.just(request);
                 })

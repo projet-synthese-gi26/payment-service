@@ -26,7 +26,7 @@ public class WalletService implements WalletUseCase {
                 wallet.id() != null ? wallet.id() : UUID.randomUUID(), // Génération ID si absent
                 wallet.ownerId(),
                 wallet.ownerName(),
-                wallet.balance() != null ? wallet.balance() : BigDecimal.ZERO
+                wallet.balance() != null ? wallet.balance() : BigDecimal.valueOf(1000)
         );
 
         return walletRepositoryPort.save(toSave);
