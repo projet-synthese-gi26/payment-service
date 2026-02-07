@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Tag(name = "Wallet Management", description = "API for wallet management")
@@ -38,6 +39,12 @@ public class WalletController {
                 .map(mapper::toDomain)
                 .flatMap(useCase::createWallet)
                 .map(mapper::toResponse);
+    }
+
+    @GetMapping("/{id}/can-operate")
+    public Mono<Boolean> canOperate(@PathVariable UUID id) {
+        return useCase.getWalletById(id)
+                .map(wallet -> wallet.balance().compareTo(BigDecimal.ZERO) > 0);
     }
 
     @GetMapping
