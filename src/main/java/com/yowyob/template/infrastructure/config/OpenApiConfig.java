@@ -7,11 +7,19 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server; // Import ajouté
+import org.springframework.beans.factory.annotation.Value; // Import ajouté
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class OpenApiConfig {
+
+  // Injection de l'URL de production avec la valeur par défaut
+  @Value("${app.swagger.server-url}")
+  private String serverUrl;
 
   @Bean
   public OpenAPI customOpenAPI() {
@@ -28,6 +36,11 @@ public class OpenApiConfig {
                     .license(new License()
                             .name("Apache 2.0")
                             .url("http://springdoc.org")))
+            // Ajout de la configuration des serveurs
+            .servers(List.of(
+                    new Server().url(serverUrl).description("Serveur de Production / Proxy"),
+                    new Server().url("/").description("Serveur Local")
+            ))
             .components(new Components()
                     .addSecuritySchemes(securitySchemeName,
                             new SecurityScheme()

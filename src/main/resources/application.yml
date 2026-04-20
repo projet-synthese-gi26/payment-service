@@ -2,6 +2,11 @@ server:
   port: 8090
   forward-headers-strategy: framework
 
+# Config Swagger
+app:
+  swagger:
+    server-url: ${PAYMENT_SERVER_URL:https://traefikdev.yowyob.com/payment}
+
 springdoc:
   swagger-ui:
     config-url: /payment/v3/api-docs/swagger-config
